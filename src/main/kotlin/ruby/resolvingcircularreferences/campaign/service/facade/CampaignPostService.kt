@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Service
-class CampaignPostFacade(
+class CampaignPostService(
     private val campaignRepository: CampaignRepository
 ){
     @Transactional

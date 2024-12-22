@@ -7,7 +7,7 @@ import ruby.resolvingcircularreferences.campaign.entity.CampaignHistory
 import ruby.resolvingcircularreferences.campaign.repository.CampaignHistoryRepository
 
 @Service
-class CampaignHistoryFacade(
+class CampaignHistoryService(
     private val campaignHistoryRepository: CampaignHistoryRepository
 ){
     @Transactional

@@ -7,7 +7,7 @@ import ruby.resolvingcircularreferences.contract.entity.ContractHistory
 import ruby.resolvingcircularreferences.contract.repository.ContractHistoryRepository
 
 @Service
-class ContractHistoryFacade(
+class ContractHistoryService(
     private val contractHistoryRepository: ContractHistoryRepository
 ){
     @Transactional

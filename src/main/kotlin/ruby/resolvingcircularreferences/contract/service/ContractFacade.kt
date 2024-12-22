@@ -1,23 +1,23 @@
 package ruby.resolvingcircularreferences.contract.service
 
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import ruby.resolvingcircularreferences.campaign.service.facade.CampaignHistoryFacade
+import ruby.resolvingcircularreferences.campaign.service.facade.CampaignHistoryService
 import ruby.resolvingcircularreferences.contract.repository.ContractRepository
 import ruby.resolvingcircularreferences.contract.request.ContractPatch
-import ruby.resolvingcircularreferences.contract.service.facade.ContractHistoryFacade
-import ruby.resolvingcircularreferences.contract.service.facade.ContractPatchFacade
+import ruby.resolvingcircularreferences.contract.service.facade.ContractHistoryService
+import ruby.resolvingcircularreferences.contract.service.facade.ContractPatchService
 
-@Service
-class ContractService(
+@Component
+class ContractFacade(
     private val contractRepository: ContractRepository,
-    private val campaignHistoryFacade: CampaignHistoryFacade,
-    private val contractPatchFacade: ContractPatchFacade,
-    private val contractHistoryFacade: ContractHistoryFacade
+    private val campaignHistoryService: CampaignHistoryService,
+    private val contractPatchService: ContractPatchService,
+    private val contractHistoryService: ContractHistoryService
 ){
     @Transactional
     fun patch(id: Long, contractPatch: ContractPatch) {
-        val contract = contractPatchFacade.patch(id, contractPatch)
+        val contract = contractPatchService.patch(id, contractPatch)
 
         val contracts = contractRepository.findByCampaign(contract.campaign)
         contracts.forEach {
@@ -25,7 +25,7 @@ class ContractService(
             it.campaignVersion = it.campaign.version
         }
 
-        contracts.forEach { contractHistoryFacade.postHistory(it) }
+        contracts.forEach { contractHistoryService.postHistory(it) }
 
         val campaign = contract.campaign
         campaign.run {
@@ -33,6 +33,6 @@ class ContractService(
             endDate = contracts.maxOf { it.endDate }
             amount = contracts.sumOf { it.amount }
         }
-        campaignHistoryFacade.postHistory(campaign)
+        campaignHistoryService.postHistory(campaign)
     }
 }
