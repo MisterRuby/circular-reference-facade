@@ -16,7 +16,9 @@
 
 ## 1. 순환 참조
 순환 참조는 두 개 이상의 객체 또는 컴포넌트가 서로를 참조하면서, 종속 관계가 **순환 구조**를 이루는 상황을 말합니다.
+
 ![img.png](img/circular-references1.png)
+
 의존성 방향이 양방향으로 설계된 경우로 서로 밀접하게 결합되기 때문에 서로 간의 변경에 의한 영향이 미칠 가능성이 높아집니다.
 여러 로직이 존재하는 실무에서는 A -> B -> A -> B .... 등으로 흐름이 꼬여 문맥 파악이 어려워 질 수 있으며, 이는 유지보수 측면에서 
 큰 손해를 발생시키게 됩니다.
@@ -83,6 +85,7 @@ class ContractService{
 ```
 위의 코드를 보면 CampaignService 에서 청약(Contract) 의 등록 및 이력 등록을 추가로 처리하기 위해 ContractService 를 참조하고 있습니다.
 또한, ContractService 에서도 캠페인(Campaign) 의 이력을 등록하기 위해 CampaignService 을 참조하고 있어 순환 참조가 발생하고 있습니다.
+
 ![img.png](img/circular-references2.png)
 
 이런 상황을 해결하기 위해서 참조하는 목적인 청약의 등록과 이력 등록, 캠페인의 이력 등록 부분을 다른 클래스로 분리하여,
@@ -96,6 +99,7 @@ CampaignService 와 ContractService 에서 참조하면 되지 않을까라는 �
 이를 통해 클라이언트는 서브시스템의 세부 사항을 알 필요 없이 단순화된 인터페이스만 사용할 수 있습니다.
 
 ![img.png](img/facade.png)
+
 ```kotlin
 @Component
 class CampaignFacade(
