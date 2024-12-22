@@ -17,3 +17,6 @@ spring:
         jdbc:
           batch_size: 1000
     open-in-view: false
+
+  main:
+    allow-circular-references: true
