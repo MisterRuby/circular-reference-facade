@@ -10,7 +10,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Service
-class ContractPatchFacade(
+class ContractPatchService(
     private val contractRepository: ContractRepository
 ){
     @Transactional

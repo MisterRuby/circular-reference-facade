@@ -1,36 +1,36 @@
 package ruby.resolvingcircularreferences.campaign.service
 
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import ruby.resolvingcircularreferences.campaign.repository.CampaignRepository
 import ruby.resolvingcircularreferences.campaign.request.CampaignPatch
 import ruby.resolvingcircularreferences.campaign.request.CampaignPost
-import ruby.resolvingcircularreferences.campaign.service.facade.CampaignHistoryFacade
-import ruby.resolvingcircularreferences.campaign.service.facade.CampaignPostFacade
+import ruby.resolvingcircularreferences.campaign.service.facade.CampaignHistoryService
+import ruby.resolvingcircularreferences.campaign.service.facade.CampaignPostService
 import ruby.resolvingcircularreferences.contract.repository.ContractRepository
-import ruby.resolvingcircularreferences.contract.service.facade.ContractHistoryFacade
-import ruby.resolvingcircularreferences.contract.service.facade.ContractPostFacade
+import ruby.resolvingcircularreferences.contract.service.facade.ContractHistoryService
+import ruby.resolvingcircularreferences.contract.service.facade.ContractPostService
 
-@Service
-class CampaignService(
+@Component
+class CampaignFacade(
     private val campaignRepository: CampaignRepository,
     private val contractRepository: ContractRepository,
-    private val campaignPostFacade: CampaignPostFacade,
-    private val campaignHistoryFacade: CampaignHistoryFacade,
-    private val contractPostFacade: ContractPostFacade,
-    private val contractHistoryFacade: ContractHistoryFacade
+    private val campaignPostService: CampaignPostService,
+    private val campaignHistoryService: CampaignHistoryService,
+    private val contractPostService: ContractPostService,
+    private val contractHistoryService: ContractHistoryService
 ){
     @Transactional
     fun post(campaignPost: CampaignPost) {
         val contracts = campaignPost.contracts
-        val campaign = campaignPostFacade.post(campaignPost)
+        val campaign = campaignPostService.post(campaignPost)
 
-        campaignHistoryFacade.postHistory(campaign)
+        campaignHistoryService.postHistory(campaign)
 
         contracts.forEach {
-            val contract = contractPostFacade.post(it, campaign)
-            contractHistoryFacade.postHistory(contract)
+            val contract = contractPostService.post(it, campaign)
+            contractHistoryService.postHistory(contract)
         }
     }
 
@@ -43,7 +43,7 @@ class CampaignService(
             it.increaseVersion()
         }
 
-        campaignHistoryFacade.postHistory(campaign)
+        campaignHistoryService.postHistory(campaign)
 
         val contracts = contractRepository.findByCampaign(campaign)
         contracts.forEach {
@@ -51,6 +51,6 @@ class CampaignService(
             it.campaignVersion = it.campaign.version
         }
 
-        contracts.forEach { contractHistoryFacade.postHistory(it) }
+        contracts.forEach { contractHistoryService.postHistory(it) }
     }
 }
